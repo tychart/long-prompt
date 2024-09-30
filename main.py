@@ -12,9 +12,9 @@ from selenium.webdriver.chrome.options import Options
 
 # Set up Chrome options for headless mode
 chrome_options = Options()
-# chrome_options.add_argument("--headless")
-# chrome_options.add_argument("--no-sandbox")
-# chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--window-size=1920,1080")
 chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--disable-software-rasterizer")
@@ -31,8 +31,6 @@ email = os.getenv('EMAIL')
 org_password = os.getenv('PASSWORD')
 
 screenshot_counter = 1
-curr_chunk_count = 0
-chunk_total = 0
 
 def send_long_text(long_text):
     try:
@@ -88,13 +86,9 @@ def send_long_text(long_text):
 
 
         text_box = shadow_tree["cib_serp"]["children"]["cib_action_bar"]["children"]["cib_text_input"]["root"].find_element(By.CSS_SELECTOR, "textarea")
-        send_button = shadow_tree["cib_serp"]["children"]["cib_action_bar"]["root"].find_element(By.CSS_SELECTOR, "button[aria-label='Submit']")
+        # send_button = shadow_tree["cib_serp"]["children"]["cib_action_bar"]["root"].find_element(By.CSS_SELECTOR, "button[aria-label='Submit']")
 
-        looping_send(
-            shadow_tree,
-            text_box, 
-            long_text
-        )
+        looping_send(shadow_tree, text_box, long_text)
 
         # time.sleep(100000000)
 
@@ -189,10 +183,10 @@ def authenticate():
 
 def looping_send(shadow_tree, text_box, long_text):
     chunk_list = text_splitter(long_text, 7500)
-    global chunk_total
     chunk_total = len(chunk_list)
 
     for curr_chunk_count, chunk in enumerate(chunk_list, start=1):
+        time.sleep(10)
         text_box.send_keys(chunk)
         print(f"Just output chunk {curr_chunk_count} out of {chunk_total}")
 
@@ -200,23 +194,16 @@ def looping_send(shadow_tree, text_box, long_text):
         screenshot()
         text_box.send_keys(Keys.RETURN)
 
-        if curr_chunk_count < chunk_total:
-            wait_typing_indicator_appear(shadow_tree)
-            wait_typing_indicator_disappear(shadow_tree)
-            write_responses(shadow_tree, -1)
-            time.sleep(1)
+        time.sleep(10)
 
-    # Wait for the last response to be finished
-    wait_typing_indicator_appear(shadow_tree)
-    wait_typing_indicator_disappear(shadow_tree)
+        wait_typing_indicator_appear(shadow_tree)
+        wait_typing_indicator_disappear(shadow_tree)
 
+        time.sleep(10)
+
+        write_responses(shadow_tree, -1)
+            
     time.sleep(10)
-
-    # # Wait for the last response to be finished
-    # wait_typing_indicator_appear(shadow_tree)
-    # wait_typing_indicator_disappear(shadow_tree)
-    
-    # time.sleep(10)
 
     # Final update of the output file
     write_responses(shadow_tree)
@@ -317,12 +304,12 @@ def read_file_contents(filename):
     with open(filename, 'r', encoding='utf-8') as file:
         return file.read()
 
-def write_to_file(text, filename="conversations.md", overwrite=False):
+def write_to_file(text, filename="out.md", overwrite=False):
     mode = "w" if overwrite else "a"
     with open(filename, mode, encoding="utf-8") as file:
         file.write(text + "\n")
 
-def clear_file(filename="conversations.md", backup=False):
+def clear_file(filename="out.md", backup=False):
     if backup:
         # Create the history directory if it doesn't exist
         history_dir = "history"
