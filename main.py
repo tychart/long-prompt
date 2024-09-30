@@ -21,83 +21,8 @@ org_password = os.getenv('PASSWORD')
 
 def send_long_text(long_text):
     try:
-
-        '''      
-        # Step 1: Click the sign-in button
-        shadow_host_1 = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "cib-serp"))
-        )
-        shadow_root_1 = driver.execute_script('return arguments[0].shadowRoot', shadow_host_1)
-        shadow_host_2 = shadow_root_1.find_element(By.CSS_SELECTOR, "cib-conversation")
-        shadow_root_2 = driver.execute_script('return arguments[0].shadowRoot', shadow_host_2)
-        shadow_host_3 = shadow_root_2.find_element(By.CSS_SELECTOR, "cib-welcome-container")
-        shadow_root_3 = driver.execute_script('return arguments[0].shadowRoot', shadow_host_3)
-        button = shadow_root_3.find_element(By.CSS_SELECTOR, "button.muid-cta")
-        button.click()
-
-        # Step 2: Enter email and submit
-        email_input = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.NAME, "loginfmt"))
-        )
-        email_input.send_keys(email)
-        email_input.send_keys(Keys.RETURN)
-
-        # Step 3: Handle organization login
-        org_login_input = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.NAME, "passwd"))
-        )
-        org_login_input.send_keys(org_password)
-        org_login_input.send_keys(Keys.RETURN)
-
-        # Step 4: Handle push notification manually (if possible)
-        # This step might require manual intervention
-
-        duo_security_key_wait = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "webauthn-request-header"))
-        )
-        time.sleep(1)
-        pyautogui.press('enter')
-
-        other_options_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, ".action-link.other-options-link"))
-        )
-        # other_options_button = duo_security_key_cancled.find_element(By.CSS_SELECTOR, "action-link other-options-link")
-        other_options_button.click()
-
-        # Wait for the element to be present and then click it
-        duo_push_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//div[contains(text(), 'Duo Push')]"))
-        )
-        duo_push_button.click()
-
-
-        # duo_security_key_wait.send_keys(Keys.RETURN)
-
-
-        # Step 5: Handle "Stay signed in" prompt
-        duo_stay_signed_in_button = WebDriverWait(driver, 100).until(
-            EC.presence_of_element_located((By.ID, "trust-browser-button"))
-        )
-
-        # print(f"Found trust browser button! {duo_stay_signed_in_button.text}")
-        duo_stay_signed_in_button.click()
-
-
-        # Step 6: Handle "Stay signed in" prompt on microsoft
-        microsoft_stay_signed_in_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "idBtn_Back"))
-        )
-        microsoft_stay_signed_in_button.click()
-'''
-        
-
-        # Step 6: Ensure you are back on the original page
-        # WebDriverWait(driver, 10).until(
-        #     EC.presence_of_element_located((By.CLASS_NAME, "b_wlcmDesc")) # Just the heading text of Copilot
-        # )
-
+      
         authenticate()
-
 
         shadow_tree = {
             "cib_serp": {
@@ -215,10 +140,6 @@ def authenticate():
     )
     duo_push_button.click()
 
-
-    # duo_security_key_wait.send_keys(Keys.RETURN)
-
-
     # Step 5: Handle "Stay signed in" prompt
     duo_stay_signed_in_button = WebDriverWait(driver, 100).until(
         EC.presence_of_element_located((By.ID, "trust-browser-button"))
@@ -226,7 +147,6 @@ def authenticate():
 
     # print(f"Found trust browser button! {duo_stay_signed_in_button.text}")
     duo_stay_signed_in_button.click()
-
 
     # Step 6: Handle "Stay signed in" prompt on microsoft
     microsoft_stay_signed_in_button = WebDriverWait(driver, 10).until(
@@ -241,11 +161,8 @@ def looping_send(
         long_text
     ):
     text_iterator = text_splitter(long_text, 7500)
-    # print(f"Text: {text_itterator}")
 
     first_chunk = next(text_iterator)
-    # print(f"Sending {first_chunk}")
-
 
     text_box.send_keys(first_chunk)
     time.sleep(10)
@@ -253,9 +170,6 @@ def looping_send(
     text_box.send_keys(Keys.RETURN)
 
     for chunk in text_iterator:
-        
-        # print(f"Currently Working on this chunk: {chunk}")
-        
         
         # Wait for cib-typing-indicator to appear within shadow_root_2
         WebDriverWait(shadow_tree["cib_serp"]["children"]["cib_action_bar"]["root"], 500).until(
@@ -312,7 +226,6 @@ def write_responses(shadow_tree, response_number=None):
             copilot_response = shadow_root_cib_message_group.find_element(By.CSS_SELECTOR, "cib-message")
             response_text = copilot_response.get_attribute("aria-label")
 
-            # print(response_text)
             write_to_file(response_text)
     if (response_number == None):
         # Delete whatever is in the file currently
@@ -326,7 +239,6 @@ def write_responses(shadow_tree, response_number=None):
             copilot_response = shadow_root_cib_message_group.find_element(By.CSS_SELECTOR, "cib-message")
             response_text = copilot_response.get_attribute("aria-label")
 
-            # print(response_text)
             write_to_file(response_text)
 
 def split_text_simple(text, chunk_size):
@@ -366,13 +278,6 @@ def read_file_contents(filename):
     """Reads the contents of a text file and returns it as a string."""
     with open(filename, 'r', encoding='utf-8') as file:
         return file.read()
-    
-# Function to write text to a file
-# def write_to_file(text, filename="conversations.md", overwrite=False):
-#     with open(filename, "a") as file:
-#         file.write(text + "\n")
-
-
 
 def write_to_file(text, filename="conversations.md", overwrite=False):
     mode = "w" if overwrite else "a"
