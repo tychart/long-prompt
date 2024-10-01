@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 import time
 # import pyautogui
 from dotenv import load_dotenv
@@ -9,6 +10,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
+
+
+
 
 # Set up Chrome options for headless mode
 chrome_options = Options()
@@ -104,7 +108,7 @@ def send_long_text(long_text):
 def authenticate():
     screenshot()
     # Step 1: Click the sign-in button
-    shadow_host_1 = WebDriverWait(driver, 10).until(
+    shadow_host_1 = WebDriverWait(driver, 15).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, "cib-serp"))
     )
     shadow_root_1 = driver.execute_script('return arguments[0].shadowRoot', shadow_host_1)
@@ -370,3 +374,14 @@ send_long_text(long_text)
 clear_file(backup=True)
 
 print("Program Finished! Check the history folder for the final output")
+
+
+
+def process_input(input_text):
+    # Your processing logic here
+    return f"Processed: {input_text}"
+
+if __name__ == '__main__':
+    input_text = sys.argv[1]
+    output = process_input(input_text)
+    print(output)
