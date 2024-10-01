@@ -1,3 +1,94 @@
+I have a python script listed below that I want to turn into a very simple webapp to be able to automate using a website that can submit text and recieve a response. This will be running in a docker container. I want to be able to submit text on the interface, then have the text be read from the output file generated from this script (out.md)
+
+import os
+import re
+import time
+# import pyautogui
+from dotenv import load_dotenv
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
+
+# Set up Chrome options for headless mode
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--window-size=1920,1080")
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--disable-software-rasterizer")
+
+# Initialize the WebDriver with the options
+driver = webdriver.Chrome(options=chrome_options)
+driver.get("https://copilot.microsoft.com")
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Get the username and password from environment variables
+email = os.getenv('EMAIL')
+org_password = os.getenv('PASSWORD')
+... Full script ...
+
+def read_file_contents(filename):
+    """Reads the contents of a text file and returns it as a string."""
+    with open(filename, 'r', encoding='utf-8') as file:
+        return file.read()
+
+def write_to_file(text, filename="out.md", overwrite=False):
+    mode = "w" if overwrite else "a"
+    with open(filename, mode, encoding="utf-8") as file:
+        file.write(text + "\n")
+
+def clear_file(filename="out.md", backup=False):
+    if backup:
+        # Create the history directory if it doesn't exist
+        history_dir = "history"
+        if not os.path.exists(history_dir):
+            os.makedirs(history_dir)
+
+        # Extract the base name and extension
+        base_name, extension = os.path.splitext(filename)
+
+        # Find the next available backup number
+        backup_number = 1
+        backup_filename = os.path.join(history_dir, f"{base_name}-backup-{backup_number}{extension}")
+        while os.path.exists(backup_filename):
+            backup_number += 1
+            backup_filename = os.path.join(history_dir, f"{base_name}-backup-{backup_number}{extension}")
+
+        # Read the contents of the current file
+        with open(filename, "r", encoding="utf-8") as original_file:
+            content = original_file.read()
+
+        # Write the contents to the backup file
+        with open(backup_filename, "w", encoding="utf-8") as backup_file:
+            backup_file.write(content)
+
+    # Clear the old file
+    open(filename, "w").close()
+
+def screenshot(screenshot_dir="screenshots"):
+    global screenshot_counter
+    if not os.path.exists(screenshot_dir):
+        os.makedirs(screenshot_dir)
+    driver.save_screenshot(f'{screenshot_dir}/screenshot{screenshot_counter}.png')
+    screenshot_counter += 1
+
+
+
+long_text = read_file_contents("in.txt")
+send_long_text(long_text)
+
+# Backup the output file just made
+clear_file(backup=True)
+
+print("Program Finished! Check the history folder for the final output")
+
+
 Sure, I can help you turn your Python script into a simple web app. Here's a step-by-step guide to achieve this using Flask, a lightweight web framework for Python. We'll also set it up to run in a Docker container.
 
 ### Step 1: Create a Flask Web App
