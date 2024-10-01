@@ -344,8 +344,25 @@ def screenshot(screenshot_dir="screenshots"):
     driver.save_screenshot(f'{screenshot_dir}/screenshot{screenshot_counter}.png')
     screenshot_counter += 1
 
+def delete_folder(in_folder):
+    # Define the path to the temporary screenshots folder
+    temp_screenshots_folder = os.path.join(os.getcwd(), in_folder)
 
+    # Check if the folder exists
+    if os.path.exists(temp_screenshots_folder):
+        # Walk through the directory and remove files and subdirectories
+        for root, dirs, files in os.walk(temp_screenshots_folder, topdown=False):
+            for name in files:
+                os.remove(os.path.join(root, name))
+            for name in dirs:
+                os.rmdir(os.path.join(root, name))
+        # Remove the main directory
+        os.rmdir(temp_screenshots_folder)
+        print(f"The folder '{temp_screenshots_folder}' has been deleted.")
+    else:
+        print(f"The folder '{temp_screenshots_folder}' does not exist.")
 
+delete_folder("screenshots")
 long_text = read_file_contents("in.txt")
 send_long_text(long_text)
 

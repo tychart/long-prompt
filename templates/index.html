@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Simple Web App</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Submit Text</h1>
+      <form method="post">
+        <div class="form-group">
+          <label for="text">Text</label>
+          <textarea class="form-control" id="text" name="text" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+      {% if request.method == 'POST' %}
+      <h2>Output</h2>
+      <pre>{{ output }}</pre>
+      {% endif %}
+    </div>
+  </body>
+</html>
