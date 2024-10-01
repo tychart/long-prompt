@@ -1,5 +1,5 @@
 I have a python script listed below that I want to turn into a very simple webapp to be able to automate using a website that can submit text and recieve a response. This will be running in a docker container. I want to be able to submit text on the interface, then have the text be read from the output file generated from this script (out.md)
-
+```{python}
 import os
 import re
 import time
@@ -87,7 +87,7 @@ send_long_text(long_text)
 clear_file(backup=True)
 
 print("Program Finished! Check the history folder for the final output")
-
+```
 
 Sure, I can help you turn your Python script into a simple web app. Here's a step-by-step guide to achieve this using Flask, a lightweight web framework for Python. We'll also set it up to run in a Docker container.
 
