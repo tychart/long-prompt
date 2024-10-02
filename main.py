@@ -1,8 +1,10 @@
+from flask import Flask, request, render_template, jsonify
+from flask_executor import Executor
+import asyncio
+import aiofiles
 import os
 import re
-import sys
 import time
-# import pyautogui
 from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -12,11 +14,13 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 
 
+app = Flask(__name__)
+executor = Executor(app)
 
 
 # Set up Chrome options for headless mode
 chrome_options = Options()
-chrome_options.add_argument("--headless")
+# chrome_options.add_argument("--headless")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--window-size=1920,1080")
@@ -119,12 +123,13 @@ def authenticate():
     button = shadow_root_3.find_element(By.CSS_SELECTOR, "button.muid-cta")
     button.click()
 
-    screenshot()
+    
 
     # Step 2: Enter email and submit
     email_input = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.NAME, "loginfmt"))
     )
+    screenshot()
     email_input.send_keys(email)
     email_input.send_keys(Keys.RETURN)
 
@@ -132,6 +137,7 @@ def authenticate():
     org_login_input = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.NAME, "passwd"))
     )
+    screenshot()
     org_login_input.send_keys(org_password)
     org_login_input.send_keys(Keys.RETURN)
 
@@ -196,11 +202,13 @@ def looping_send(shadow_tree, text_box, long_text):
 
         time.sleep(60 if curr_chunk_count == 1 else 30)
         screenshot()
+        
         text_box.send_keys(Keys.RETURN)
 
-        time.sleep(10)
+        
 
         wait_typing_indicator_appear(shadow_tree)
+        time.sleep(10)
         wait_typing_indicator_disappear(shadow_tree)
 
         time.sleep(10)
@@ -265,6 +273,7 @@ def write_responses(shadow_tree, response_number=None):
                 write_to_file(response_text)
     except Exception as e:
         print(f"Ran into an error when trying to get and write responses: {e}")
+        raise e
 
 def split_text_simple(text, chunk_size):
     """Splits the text into chunks of specified size and returns a list of chunks."""
@@ -366,22 +375,56 @@ def delete_folder(in_folder):
     else:
         print(f"The folder '{temp_screenshots_folder}' does not exist.")
 
-delete_folder("screenshots")
-long_text = read_file_contents("in.txt")
-send_long_text(long_text)
+def run_main_script():
+    delete_folder("screenshots")
+    long_text = read_file_contents("in.txt")
+    send_long_text(long_text)
 
-# Backup the output file just made
-clear_file(backup=True)
+    # Backup the output file just made
+    clear_file(backup=True)
 
-print("Program Finished! Check the history folder for the final output")
+    print("Program Finished! Check the history folder for the final output")
 
 
 
-def process_input(input_text):
-    # Your processing logic here
-    return f"Processed: {input_text}"
+# def process_input(input_text):
+#     # Your processing logic here
+#     return f"Processed: {input_text}"
+
+# if __name__ == '__main__':
+#     input_text = sys.argv[1]
+#     output = process_input(input_text)
+#     print(output)
+
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    return render_template('index.html')
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    prompt = request.form['prompt']
+    text = request.form['text']
+    full_text = f"{prompt}    {text}"
+    print(f"Entered the submit function, this is the text: {full_text[:50]}")
+    write_to_file(full_text, "in.txt", overwrite=True)
+    executor.submit(run_main_script)
+    return render_template('index.html', output="Processing started. Check back later for the results.")
+
+@app.route('/get_output', methods=['GET'])
+def get_output():
+    content = read_file_contents('out.md')
+    return jsonify({'content': content})
+
+@app.route('/status', methods=['GET'])
+def status():
+    future = executor.futures.get('main_script')
+    if future is None:
+        return jsonify({'status': 'not started'})
+    elif future.done():
+        return jsonify({'status': 'completed'})
+    else:
+        return jsonify({'status': 'running'})
 
 if __name__ == '__main__':
-    input_text = sys.argv[1]
-    output = process_input(input_text)
-    print(output)
+    app.run(host='0.0.0.0', port=5000)
