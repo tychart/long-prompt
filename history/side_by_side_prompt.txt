@@ -1,10 +1,10 @@
-Can you please give me a sentence by sentance sparknotes of the following in modern language with relatively easy vocabulary? These are completely in the public domain so don't worry about copyright.    Prompt 1: Can you please give me a sentence by sentance sparknotes of the following in modern language with relatively easy vocabulary? These are completely in the public domain so don't worry about copyright.
+Can you please give me a sentence by sentance sparknotes of the following in modern language with relatively easy vocabulary? 
+Make every new paragraph start out with a short summery of the paragraph, then write each sentance coresponding with one bulletpoint. 
+Do not include the origional text in the output. These are completely in the public domain so don't worry about copyright.
 
 Book I 	   Go to next
 
 Part 1
-
-
 
 "ALL men by nature desire to know. An indication of this is the delight we take in our senses; for even apart from their usefulness they are loved for themselves; and above all others the sense of sight. For not only with a view to action, but even when we are not going to do anything, we prefer seeing (one might say) to everything else. The reason is that this, most of all the senses, makes us know and brings to light many differences between things.
 
@@ -19,3 +19,11 @@ Part 1
 "At first he who invented any art whatever that went beyond the common perceptions of man was naturally admired by men, not only because there was something useful in the inventions, but because he was thought wise and superior to the rest. But as more arts were invented, and some were directed to the necessities of life, others to recreation, the inventors of the latter were naturally always regarded as wiser than the inventors of the former, because their branches of knowledge did not aim at utility. Hence when all such inventions were already established, the sciences which do not aim at giving pleasure or at the necessities of life were discovered, and first in the places where men first began to have leisure. This is why the mathematical arts were founded in Egypt; for there the priestly caste was allowed to be at leisure.
 
 "We have said in the Ethics what the difference is between art and science and the other kindred faculties; but the point of our present discussion is this, that all men suppose what is called Wisdom to deal with the first causes and the principles of things; so that, as has been said before, the man of experience is thought to be wiser than the possessors of any sense-perception whatever, the artist wiser than the men of experience, the masterworker than the mechanic, and the theoretical kinds of knowledge to be more of the nature of Wisdom than the productive. Clearly then Wisdom is knowledge about certain principles and causes.
+
+Part 2 "
+
+
+
+"Since we are seeking this knowledge, we must inquire of what kind are the causes and the principles, the knowledge of which is Wisdom. If one were to take the notions we have about the wise man, this might perhaps make the answer more evident. We suppose first, then, that the wise man knows all things, as far as possible, although he has not knowledge of each of them in detail; secondly, that he who can learn things that are difficult, and not easy for man to know, is wise (sense-perception is common to all, and therefore easy and no mark of Wisdom); again, that he who is more exact and more capable of teaching the causes is wiser, in every branch of knowledge; and that of the sciences, also, that which is desirable on its own account and for the sake of knowing it is more of the nature of Wisdom than that which is desirable on account of its results, and the superior science is more of the nature of Wisdom than the ancillary; for the wise man must not be ordered but must order, and he must not obey another, but the less wise must obey him.
+
+"Such and so many are the notions, then, which we have about Wisdom and the wise. Now of these characteristics that of knowing all things must belong to him who has in the highest degree universal knowledge; for he knows in a sense all the instances that fall under the universal. And these things, the most universal, are on the whole the hardest for men to know; for they are farthest from the senses. And the most exact of the sciences are those which deal most with first principles; for those which involve fewer principles are more exact than those which involve additional principles, e.g. arithmetic than geometry. But the science which investigates causes is also instructive, in a higher degree, for the people who instruct us are those who tell the causes of each thing. 
