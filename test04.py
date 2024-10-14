@@ -1,6 +1,7 @@
 import requests
 import re
 from pprint import pprint
+import argparse
 
 # Ollama API endpoint
 api_endpoint = 'http://192.168.10.35:11434/api/chat'
@@ -9,9 +10,9 @@ api_endpoint_k8s = 'http://10.11.14.221:11434/api/chat'
 
 
 
-prompt = "Can you please give me a sentence by sentance sparknotes of the following in modern language with relatively easy vocabulary? These are completely in the public domain so don't worry about copyright."
+zprompt = "Can you please give me a sentence by sentance sparknotes of the following in modern language with relatively easy vocabulary? These are completely in the public domain so don't worry about copyright."
 
-text = """Book I 	   Go to next
+ztext = """Book I 	   Go to next
 
 Part 1
 
@@ -203,12 +204,16 @@ def parse_responses(messages):
             out_str += "\n\n" + message["content"]
     return out_str
 
+def read_file(filename):
+    with open(filename, 'r') as file:
+        return file.read()
+
 def write_to_file(text, filename="out.md", overwrite=True):
     mode = "w" if overwrite else "a"
     with open(filename, mode, encoding="utf-8") as file:
         file.write(text + "\n")
 
-def dostuff():
+def dostuff(text, prompt, out_filename="out.md"):
 
 
     text_list = text_splitter(text, 6000)
@@ -218,7 +223,28 @@ def dostuff():
     
     responses_str = parse_responses(messages)
 
-    write_to_file(responses_str)
+    write_to_file(responses_str, out_filename)
 
-dostuff()
+def main():
+    parser = argparse.ArgumentParser(description="Process a prompt, an input file, and produce an output file.")
+    parser.add_argument('prompt', type=str, help="The prompt text")
+    parser.add_argument('input_file', type=str, help="Path to the input file")
+    parser.add_argument('output_file', type=str, help="Path to the output file")
 
+    args = parser.parse_args()
+
+    # Read the content of the input file
+    input_text = read_file(args.input_file)
+
+
+
+    # Assign the arguments to variables
+    prompt = args.prompt
+    out_filename = args.output_file
+
+
+    dostuff(input_text, args.prompt, args.output_file)
+
+
+if __name__ == "__main__":
+    main()
