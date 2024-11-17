@@ -43,7 +43,7 @@ def add_message(messages, role, message):
         "role": role,
         "content": message
     }
-
+    
     messages.append(new_message)
     return messages
 
@@ -54,7 +54,7 @@ def text_splitter(text, chunk_size):
     sentences = re.split(r'(?<=[.!?]) +', text)
     current_chunk = ""
     chunks = []
-
+    
     for sentence in sentences:
         if len(current_chunk) + len(sentence) + 1 <= chunk_size:
             current_chunk += sentence + " "
@@ -76,7 +76,7 @@ def text_splitter(text, chunk_size):
                 current_chunk = sentence + " "
     if current_chunk:
         chunks.append(current_chunk.strip())
-
+    
     return chunks
 
 def looping_send(text_list, prompt):
@@ -86,7 +86,7 @@ def looping_send(text_list, prompt):
     for chunk in text_list:
         print(f"Working on chunk {curr_chunk} out of {len(text_list)}\n")
         # send_text(url, prompt, chunk)
-
+        
         messages = add_question(messages, prompt, chunk)
         response = send_messages(api_endpoint, messages)
 
@@ -118,11 +118,11 @@ def write_to_file(text, filename="out.md", overwrite=True):
 def dostuff(text, prompt, out_filename="out.md"):
 
 
-    text_list = text_splitter(text, 6000)
+    text_list = text_splitter(text, 8000)
     messages = looping_send(text_list, prompt)
 
     pprint(messages)
-
+    
     responses_str = parse_responses(messages)
 
     write_to_file(responses_str, out_filename)
@@ -148,3 +148,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
